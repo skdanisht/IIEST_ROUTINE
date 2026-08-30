@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Class Routine — Weekly Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          paper: '#FAFAF9',
+          paperdark: '#0B0B0C',
+          surface: '#FFFFFF',
+          surfacedark: '#161617',
+          ink: '#161616',
+          inkdark: '#F2F1EF',
+          muted: '#8A8A87',
+          muteddark: '#8F8F8C',
+          line: '#E7E5E1',
+          linedark: '#2A2A2A',
+          accent: '#FF6A3D',
+          danger: '#D6462C',
+        },
+        fontFamily: {
+          display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+          body: ['"Plus Jakarta Sans"', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  html { touch-action: manipulation; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: #DAD8D3; border-radius: 8px; }
+  .dark ::-webkit-scrollbar-thumb { background: #303030; }
+  .breathe { animation: breathe 2.6s ease-in-out infinite; }
+  @keyframes breathe { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  @media (prefers-reduced-motion: reduce) {
+    .breathe { animation: none; }
+    * { transition-duration: 0.01ms !important; }
+  }
+  textarea:focus, input:focus, button:focus-visible {
+    outline: 2px solid #FF6A3D; outline-offset: 2px;
+  }
+  .tap { cursor: pointer; touch-action: manipulation; }
+  .sheet-backdrop { transition: opacity .22s ease; }
+  .sheet-panel { transition: transform .28s cubic-bezier(.22,1,.36,1); }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: white !important; }
+  }
+</style>
+</head>
+<body class="font-body bg-paper dark:bg-paperdark text-ink dark:text-inkdark min-h-screen transition-colors">
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-24 sm:pb-14">
+
+  <!-- Header -->
+  <header class="flex items-start justify-between gap-4 mb-6">
+    <div>
+      <h1 class="font-display font-800 text-[22px] sm:text-2xl font-bold tracking-tight">Class Routine</h1>
+      <p id="todayLabel" class="text-muted dark:text-muteddark text-sm mt-0.5"></p>
+    </div>
+    <div class="flex items-center gap-1 no-print -mr-2">
+      <button id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode" class="tap h-11 w-11 grid place-items-center rounded-full text-muted dark:text-muteddark hover:text-ink dark:hover:text-inkdark hover:bg-ink/5 dark:hover:bg-white/5 transition-colors">
+        <span id="darkIconMoon" class="grid place-items-center">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+        </span>
+        <span id="darkIconSun" class="hidden grid place-items-center">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </span>
+      </button>
+      <button id="printBtn" aria-label="Print or export" title="Print / export" class="tap h-11 w-11 grid place-items-center rounded-full text-muted dark:text-muteddark hover:text-ink dark:hover:text-inkdark hover:bg-ink/5 dark:hover:bg-white/5 transition-colors">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      </button>
+      <button id="calendarBtn" aria-label="Open holiday calendar" title="Holiday calendar" class="no-print tap h-11 w-11 grid place-items-center rounded-full text-muted dark:text-muteddark hover:text-ink dark:hover:text-inkdark hover:bg-ink/5 dark:hover:bg-white/5 transition-colors">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Now / Next / Holiday -->
+  <section id="nowBanner" class="rounded-[28px] bg-ink dark:bg-surfacedark text-white p-6 mb-7">
+    <div class="flex items-center gap-2 mb-2.5">
+      <span id="nowDot" class="h-2 w-2 rounded-full bg-accent breathe shrink-0"></span>
+      <p id="nowStatus" class="font-mono text-[11px] uppercase tracking-[0.12em] text-white/50">Loading…</p>
+    </div>
+    <p id="nowSubject" class="font-display font-semibold text-[22px] sm:text-2xl leading-snug tracking-tight">—</p>
+    <p id="nowMeta" class="text-white/45 text-sm mt-1.5">—</p>
+  </section>
+
+  <!-- Search -->
+  <div class="mb-6 no-print">
+    <div class="relative">
+      <label for="searchInput" class="sr-only">Search a subject</label>
+      <input id="searchInput" type="text" placeholder="Search a subject"
+        class="w-full rounded-2xl border border-line dark:border-linedark bg-surface dark:bg-surfacedark px-4 py-3 pl-11 text-[15px] placeholder:text-muted dark:placeholder:text-muteddark focus:border-accent transition-colors" />
+      <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted dark:text-muteddark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Day selector -->
+  <div id="dayTabs" class="no-print flex gap-1 mb-6" role="tablist" aria-label="Select day"></div>
+
+  <!-- Schedule / Holiday state -->
+  <div id="scheduleHeader" class="flex items-baseline justify-between mb-3">
+    <h2 id="dayHeading" class="font-display font-semibold text-lg tracking-tight">—</h2>
+    <div class="flex items-center gap-3 no-print text-[13px] font-mono">
+      <button id="checkAllBtn" class="tap text-muted dark:text-muteddark hover:text-ink dark:hover:text-inkdark transition-colors">Mark all</button>
+      <button id="resetDayBtn" class="tap text-muted dark:text-muteddark hover:text-danger transition-colors">Reset</button>
+    </div>
+  </div>
+  <p id="dayProgressLabel" class="text-[13px] text-muted dark:text-muteddark font-mono mb-3">—</p>
+  <div id="restrictedNote" class="hidden text-[13px] text-muted dark:text-muteddark font-mono mb-3 -mt-1"></div>
+  <div id="scheduleList" class="space-y-2 mb-10"></div>
+  <div id="holidayCard" class="hidden rounded-[28px] border border-line dark:border-linedark p-8 text-center mb-10"></div>
+
+  <!-- Notes -->
+  <section class="mb-10">
+    <h2 class="font-display font-semibold text-lg tracking-tight mb-3">Notes</h2>
+    <div id="notesList" class="space-y-1"></div>
+    <p id="notesEmpty" class="text-sm text-muted dark:text-muteddark hidden">Tap the pencil on any class to leave a note or flag homework.</p>
+  </section>
+
+  <!-- Week overview -->
+  <section>
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="font-display font-semibold text-lg tracking-tight">This week</h2>
+      <span id="weekPct" class="font-mono text-sm text-muted dark:text-muteddark">—</span>
+    </div>
+    <div id="weekStats" class="flex items-end gap-2.5 h-14"></div>
+  </section>
+
+  <footer class="text-center text-xs text-muted dark:text-muteddark font-mono mt-12 no-print">Tap a class to mark it attended</footer>
+</div>
+
+<!-- Note sheet -->
+<div id="noteSheetWrap" class="fixed inset-0 z-50 hidden no-print">
+  <div id="noteBackdrop" class="sheet-backdrop absolute inset-0 bg-ink/40 opacity-0"></div>
+  <div class="absolute inset-0 flex items-end sm:items-center justify-center p-0 sm:p-6">
+    <div id="notePanel" class="sheet-panel translate-y-full sm:translate-y-4 sm:opacity-0 w-full sm:max-w-md bg-surface dark:bg-surfacedark rounded-t-[28px] sm:rounded-[28px] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]" style="overscroll-behavior:contain;" role="dialog" aria-modal="true" aria-labelledby="noteSheetTitle">
+      <div class="h-1 w-9 rounded-full bg-line dark:bg-linedark mx-auto mb-5 sm:hidden"></div>
+      <p id="noteSheetContext" class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted dark:text-muteddark mb-1"></p>
+      <h3 id="noteSheetTitle" class="font-display font-semibold text-lg tracking-tight mb-4">—</h3>
+
+      <label for="noteText" class="sr-only">Note</label>
+      <textarea id="noteText" rows="3" placeholder="What do you need to remember?"
+        class="w-full text-[15px] rounded-2xl border border-line dark:border-linedark bg-paper dark:bg-paperdark px-4 py-3 placeholder:text-muted dark:placeholder:text-muteddark focus:border-accent"></textarea>
+
+      <div class="flex gap-2 mt-3">
+        <button id="chipNote" data-kind="note" class="tap flex-1 min-h-[44px] rounded-2xl border text-sm font-medium transition-colors"></button>
+        <button id="chipHomework" data-kind="homework" class="tap flex-1 min-h-[44px] rounded-2xl border text-sm font-medium transition-colors"></button>
+      </div>
+
+      <div id="dueWrap" class="hidden mt-3">
+        <label for="noteDue" class="text-xs text-muted dark:text-muteddark font-mono mb-1 block">Due</label>
+        <input id="noteDue" type="date" class="w-full rounded-2xl border border-line dark:border-linedark bg-paper dark:bg-paperdark px-4 py-2.5 text-sm" />
+      </div>
+
+      <div class="flex gap-2 mt-5">
+        <button id="cancelNoteBtn" class="tap flex-1 min-h-[48px] rounded-2xl text-[15px] font-medium text-muted dark:text-muteddark hover:bg-ink/5 dark:hover:bg-white/5 transition-colors">Cancel</button>
+        <button id="saveNoteBtn" class="tap flex-1 min-h-[48px] rounded-2xl text-[15px] font-semibold bg-ink dark:bg-accent text-white dark:text-ink hover:opacity-90 transition-opacity">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Calendar sheet -->
+<div id="calSheetWrap" class="fixed inset-0 z-50 hidden no-print">
+  <div id="calBackdrop" class="sheet-backdrop absolute inset-0 bg-ink/40 opacity-0"></div>
+  <div class="absolute inset-0 flex items-end sm:items-center justify-center p-0 sm:p-6">
+    <div id="calPanel" class="sheet-panel translate-y-full sm:translate-y-4 sm:opacity-0 w-full sm:max-w-md bg-surface dark:bg-surfacedark rounded-t-[28px] sm:rounded-[28px] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] max-h-[88vh] overflow-y-auto" style="overscroll-behavior:contain;" role="dialog" aria-modal="true" aria-labelledby="calSheetTitle">
+      <div class="h-1 w-9 rounded-full bg-line dark:bg-linedark mx-auto mb-5 sm:hidden"></div>
+
+      <div class="flex items-center justify-between mb-5">
+        <button id="calPrevBtn" aria-label="Previous month" class="tap h-10 w-10 grid place-items-center rounded-full text-muted dark:text-muteddark hover:text-ink dark:hover:text-inkdark hover:bg-ink/5 dark:hover:bg-white/5 transition-colors">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <h3 id="calSheetTitle" class="font-display font-semibold text-lg tracking-tight">—</h3>
+        <button id="calNextBtn" aria-label="Next month" class="tap h-10 w-10 grid place-items-center rounded-full text-muted dark:text-muteddark hover:text-ink dark:hover:text-inkdark hover:bg-ink/5 dark:hover:bg-white/5 transition-colors">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-mono text-muted dark:text-muteddark mb-1.5">
+        <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+      </div>
+      <div id="calGrid" class="grid grid-cols-7 gap-1"></div>
+
+      <div class="flex items-center gap-4 mt-4 text-[12px] text-muted dark:text-muteddark font-mono">
+        <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-accent inline-block"></span>Holiday</span>
+        <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full border border-accent inline-block"></span>Restricted</span>
+      </div>
+
+      <div id="calMonthList" class="mt-5 space-y-1 border-t border-line dark:border-linedark pt-4"></div>
+
+      <button id="calCloseBtn" class="tap w-full min-h-[48px] rounded-2xl text-[15px] font-medium text-muted dark:text-muteddark hover:bg-ink/5 dark:hover:bg-white/5 transition-colors mt-4">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =================================================================
+   DATA LOADING
+   The schedule and holiday calendar live in two sibling files —
+   routine.json and holidays.json. When this page is served over
+   http(s) (a local server, GitHub Pages, Netlify, etc.), editing
+   those files changes what renders here on next load — no code
+   changes needed. If the page is opened directly as a local file
+   (file://), browsers block fetching sibling files for security,
+   so it falls back to the copies embedded below, which mirror the
+   shipped JSON exactly.
+   ================================================================= */
+const FALLBACK_ROUTINE = {
+  "dayOrder": ["Mon","Tue","Wed","Thu","Fri"],
+  "days": {
+    "Mon": { "label":"Monday", "classes": [
+      { "id":"mon-1", "period":"1–3", "start":"09:00", "end":"11:45", "subject":"Computer Programming Practice", "code":"CS 1171N", "tag":"Lab", "room":"—" },
+      { "id":"mon-2", "period":"4", "start":"11:45", "end":"12:40", "subject":"Engineering Physics", "code":"PH 1101N", "tag":"Lecture", "room":"L102" },
+      { "id":"mon-3", "period":"5–6", "start":"13:50", "end":"15:40", "subject":"Engineering Mathematics-I", "code":"MA 1101N", "tag":"Lecture", "room":"L102" }
+    ]},
+    "Tue": { "label":"Tuesday", "classes": [
+      { "id":"tue-1", "period":"1", "start":"09:00", "end":"09:55", "subject":"Engineering Mechanics", "code":"AM 1101N", "tag":"Lecture", "room":"L101" },
+      { "id":"tue-2", "period":"2", "start":"09:55", "end":"10:50", "subject":"Engineering Mathematics-I", "code":"MA 1101N", "tag":"Lecture", "room":"L101" },
+      { "id":"tue-3", "period":"3–4", "start":"10:50", "end":"12:40", "subject":"Basic Electrical Engineering", "code":"EE 1101N", "tag":"Lecture", "room":"U413" },
+      { "id":"tue-4", "period":"5–7", "start":"13:50", "end":"16:35", "subject":"NSS / NCC / PT / Yoga", "code":"", "tag":"Activity", "room":"—" }
+    ]},
+    "Wed": { "label":"Wednesday", "classes": [
+      { "id":"wed-1", "period":"1–2", "start":"09:00", "end":"10:50", "subject":"Energy, Environment and Climate Change", "code":"CE 1101N", "tag":"Lecture", "room":"L102" },
+      { "id":"wed-2", "period":"3–4", "start":"10:50", "end":"12:40", "subject":"Introduction to AI & ML", "code":"CS 1102N", "tag":"Lecture", "room":"L201" },
+      { "id":"wed-3", "period":"5–7", "start":"13:50", "end":"16:35", "subject":"NSS / NCC / PT / Yoga", "code":"", "tag":"Activity", "room":"—" }
+    ]},
+    "Thu": { "label":"Thursday", "classes": [
+      { "id":"thu-1", "period":"1", "start":"09:00", "end":"09:55", "subject":"Engineering Mechanics", "code":"AM 1101N", "tag":"Lecture", "room":"L102" },
+      { "id":"thu-2", "period":"2–3", "start":"09:55", "end":"11:45", "subject":"Introduction to AI & ML", "code":"CS 1102N", "tag":"Lecture", "room":"L201" },
+      { "id":"thu-3", "period":"5–7", "start":"13:50", "end":"16:35", "subject":"Engineering Physics Lab", "code":"PH 1171N", "tag":"Lab", "room":"—" }
+    ]},
+    "Fri": { "label":"Friday", "classes": [
+      { "id":"fri-1", "period":"1", "start":"09:00", "end":"09:55", "subject":"Basic Electrical Engineering", "code":"EE 1101N", "tag":"Lecture", "room":"U613" },
+      { "id":"fri-2", "period":"2", "start":"09:55", "end":"10:50", "subject":"Engineering Physics", "code":"PH 1101N", "tag":"Lecture", "room":"U613" },
+      { "id":"fri-3", "period":"5–7", "start":"13:50", "end":"16:35", "subject":"Engineering Graphics", "code":"AM 1171", "tag":"Drawing", "room":"Dwg. Hall" }
+    ]}
+  }
+};
+
+const FALLBACK_HOLIDAYS = {
+  "region": "West Bengal, India",
+  "year": 2026,
+  "holidays": [
+    { "date":"2026-01-01", "name":"New Year's Day", "type":"Holiday" },
+    { "date":"2026-01-12", "name":"Birthday of Swami Vivekananda", "type":"Holiday" },
+    { "date":"2026-01-22", "name":"Day before Saraswati Puja", "type":"Restricted Holiday" },
+    { "date":"2026-01-23", "name":"Netaji's Birthday / Saraswati Puja", "type":"Holiday" },
+    { "date":"2026-01-26", "name":"Republic Day", "type":"Holiday" },
+    { "date":"2026-02-04", "name":"Shab-e-Barat", "type":"Restricted Holiday" },
+    { "date":"2026-02-14", "name":"Birthday of Thakur Panchanan Barma", "type":"Restricted Holiday" },
+    { "date":"2026-03-03", "name":"Doljatra", "type":"Holiday" },
+    { "date":"2026-03-04", "name":"Holi (day after Doljatra)", "type":"Restricted Holiday" },
+    { "date":"2026-03-17", "name":"Birthday of Shri Shri Harichand Thakur", "type":"Restricted Holiday" },
+    { "date":"2026-03-20", "name":"Day before Eid-Ul-Fitr", "type":"Restricted Holiday" },
+    { "date":"2026-03-21", "name":"Eid-Ul-Fitr", "type":"Holiday" },
+    { "date":"2026-03-26", "name":"Ram Navami", "type":"Holiday" },
+    { "date":"2026-03-31", "name":"Mahavir Jayanti", "type":"Holiday" },
+    { "date":"2026-04-03", "name":"Good Friday", "type":"Holiday" },
+    { "date":"2026-04-04", "name":"Easter Saturday", "type":"Restricted Holiday" },
+    { "date":"2026-04-14", "name":"Birthday of Dr. B. R. Ambedkar", "type":"Holiday" },
+    { "date":"2026-04-15", "name":"Bengali New Year's Day (Nababarsha)", "type":"Holiday" },
+    { "date":"2026-05-01", "name":"May Day / Buddha Purnima", "type":"Holiday" },
+    { "date":"2026-05-09", "name":"Birthday of Rabindranath Tagore", "type":"Holiday" },
+    { "date":"2026-05-26", "name":"Day before Id-Ud-Zoha (Bakrid)", "type":"Restricted Holiday" },
+    { "date":"2026-05-27", "name":"Id-Ud-Zoha (Bakrid)", "type":"Holiday" },
+    { "date":"2026-06-26", "name":"Muharram", "type":"Holiday" },
+    { "date":"2026-06-30", "name":"Hul Diwas", "type":"Restricted Holiday" },
+    { "date":"2026-07-13", "name":"Birthday of Poet Bhanu Bhakt", "type":"Restricted Holiday" },
+    { "date":"2026-07-16", "name":"Rathayatra", "type":"Restricted Holiday" },
+    { "date":"2026-08-15", "name":"Independence Day", "type":"Holiday" },
+    { "date":"2026-08-26", "name":"Fateha-Dwaz-Daham", "type":"Restricted Holiday" },
+    { "date":"2026-08-28", "name":"Rakhi Bandhan", "type":"Restricted Holiday" },
+    { "date":"2026-09-04", "name":"Janmastami", "type":"Holiday" },
+    { "date":"2026-09-17", "name":"Viswakarma Puja", "type":"Restricted Holiday" },
+    { "date":"2026-10-02", "name":"Birthday of Gandhiji", "type":"Holiday" },
+    { "date":"2026-10-10", "name":"Mahalaya", "type":"Holiday" },
+    { "date":"2026-10-15", "name":"Durga Puja, Maha Chaturthi", "type":"Restricted Holiday" },
+    { "date":"2026-10-16", "name":"Durga Puja, Maha Panchami", "type":"Restricted Holiday" },
+    { "date":"2026-10-17", "name":"Durga Puja, Maha Shashthi", "type":"Restricted Holiday" },
+    { "date":"2026-10-19", "name":"Durga Puja, Maha Astami", "type":"Holiday" },
+    { "date":"2026-10-20", "name":"Durga Puja, Maha Nabami", "type":"Holiday" },
+    { "date":"2026-10-21", "name":"Durga Puja, Dasami", "type":"Holiday" },
+    { "date":"2026-10-22", "name":"Additional day for Durga Puja", "type":"Restricted Holiday" },
+    { "date":"2026-10-23", "name":"Additional day for Durga Puja", "type":"Restricted Holiday" },
+    { "date":"2026-10-24", "name":"Additional day for Durga Puja", "type":"Restricted Holiday" },
+    { "date":"2026-10-26", "name":"Additional day for Lakshmi Puja", "type":"Restricted Holiday" },
+    { "date":"2026-11-09", "name":"Additional day for Kali Puja", "type":"Restricted Holiday" },
+    { "date":"2026-11-10", "name":"Additional day for Kali Puja", "type":"Restricted Holiday" },
+    { "date":"2026-11-11", "name":"Bhratridwitiya", "type":"Holiday" },
+    { "date":"2026-11-12", "name":"Day after Bhratridwitiya", "type":"Restricted Holiday" },
+    { "date":"2026-11-16", "name":"Additional day for Chhat Puja", "type":"Restricted Holiday" },
+    { "date":"2026-11-24", "name":"Birthday of Guru Nanak", "type":"Holiday" },
+    { "date":"2026-12-25", "name":"Christmas Day", "type":"Holiday" }
+  ]
+};
+
+async function loadJSON(path, fallback) {
+  try {
+    const res = await fetch(path, { cache: 'no-store' });
+    if (!res.ok) throw new Error('not ok');
+    return await res.json();
+  } catch (e) {
+    return fallback;
+  }
+}
+
+let ROUTINE = {};
+let DAY_ORDER = [];
+let HOLIDAYS = [];
+
+/* Tags differentiated by icon + label only — no color coding, color stays reserved for meaning (live, homework, holiday). */
+const TAG_ICON = {
+  Lab: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L4.5 19a1 1 0 0 0 .87 1.5h13.26a1 1 0 0 0 .87-1.5L14 9.5V3"/></svg>',
+  Lecture: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  Activity: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+  Drawing: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="3" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="21" y2="12"/></svg>',
+};
+
+const ICON = {
+  check: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  edit: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  close: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  sun: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>',
+};
+
+/* ---------------- Storage ---------------- */
+const memCache = {};
+async function storeGet(key, fallback) {
+  try {
+    const res = await window.storage.get(key, false);
+    return res ? JSON.parse(res.value) : fallback;
+  } catch (e) {
+    return key in memCache ? memCache[key] : fallback;
+  }
+}
+async function storeSet(key, value) {
+  memCache[key] = value;
+  try { await window.storage.set(key, JSON.stringify(value), false); }
+  catch (e) { /* keep in-memory only */ }
+}
+
+let state = { dayData: {}, notes: [], dark: false };
+
+/* ---------------- Date / holiday helpers ---------------- */
+const todayKey = () => ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date().getDay()];
+function toMinutes(hhmm) { const [h,m] = hhmm.split(':').map(Number); return h*60+m; }
+function nowMinutes() { const d = new Date(); return d.getHours()*60 + d.getMinutes(); }
+function fmtDate(d) { return d.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' }); }
+function fmtShort(d) { return d.toLocaleDateString(undefined, { month:'short', day:'numeric' }); }
+function uid() { return 'n' + Math.random().toString(36).slice(2,9); }
+function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+function toISODate(d) {
+  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+// Monday of the current school week — jumps to next week's Monday if today is Sat/Sun.
+function weekMonday(today) {
+  const day = today.getDay();
+  const offset = (day + 6) % 7;
+  const monday = new Date(today);
+  monday.setHours(0,0,0,0);
+  monday.setDate(today.getDate() - offset);
+  if (day === 0 || day === 6) monday.setDate(monday.getDate() + 7);
+  return monday;
+}
+let WEEK_MONDAY = weekMonday(new Date());
+function dateForDay(dayKey) {
+  const idx = DAY_ORDER.indexOf(dayKey);
+  const d = new Date(WEEK_MONDAY);
+  d.setDate(WEEK_MONDAY.getDate() + idx);
+  return d;
+}
+function holidayFor(dayKey) {
+  const iso = toISODate(dateForDay(dayKey));
+  return HOLIDAYS.find(h => h.date === iso) || null;
+}
+
+let activeDay = null;
+let noteCtx = { day: null, classId: null };
+
+/* ---------------- Rendering ---------------- */
+function renderHeader() {
+  document.getElementById('todayLabel').textContent = fmtDate(new Date());
+}
+
+function renderTabs() {
+  const wrap = document.getElementById('dayTabs');
+  wrap.innerHTML = '';
+  DAY_ORDER.forEach(day => {
+    const isToday = day === todayKey() && toISODate(dateForDay(day)) === toISODate(new Date());
+    const isActive = day === activeDay;
+    const h = holidayFor(day);
+    const dateNum = dateForDay(day).getDate();
+    const btn = document.createElement('button');
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    btn.className = `tap flex-1 min-h-[52px] rounded-2xl text-sm font-medium transition-colors flex flex-col items-center justify-center gap-0.5 ${
+      isActive ? 'bg-ink dark:bg-inkdark text-white dark:text-ink' : 'text-muted dark:text-muteddark hover:bg-ink/5 dark:hover:bg-white/5'
+    }`;
+    const dateColor = h && h.type === 'Holiday'
+      ? (isActive ? 'text-white' : 'text-accent font-semibold')
+      : (isActive ? 'text-white/60' : 'text-muted dark:text-muteddark');
+    btn.innerHTML = `
+      <span>${ROUTINE[day].label.slice(0,3)}</span>
+      <span class="text-[11px] font-mono ${dateColor}">${dateNum}</span>
+      <span class="h-1 w-1 rounded-full ${isToday ? 'bg-accent' : 'bg-transparent'}"></span>
+    `;
+    btn.onclick = () => { activeDay = day; renderAll(); };
+    wrap.appendChild(btn);
+  });
+}
+
+function renderSchedule() {
+  const h = holidayFor(activeDay);
+  const isFullHoliday = h && h.type === 'Holiday';
+  const scheduleHeader = document.getElementById('scheduleHeader');
+  const progressLabel = document.getElementById('dayProgressLabel');
+  const restrictedNote = document.getElementById('restrictedNote');
+  const list = document.getElementById('scheduleList');
+  const holidayCard = document.getElementById('holidayCard');
+  const dateStr = fmtShort(dateForDay(activeDay));
+
+  document.getElementById('dayHeading').textContent = `${ROUTINE[activeDay].label} · ${dateStr}`;
+
+  if (isFullHoliday) {
+    scheduleHeader.classList.add('no-print');
+    document.querySelector('#scheduleHeader .flex.items-center.gap-3').classList.add('hidden');
+    progressLabel.classList.add('hidden');
+    restrictedNote.classList.add('hidden');
+    list.classList.add('hidden');
+    holidayCard.classList.remove('hidden');
+    holidayCard.innerHTML = `
+      <div class="mx-auto mb-3 h-12 w-12 rounded-full bg-accent/10 text-accent grid place-items-center">${ICON.sun}</div>
+      <p class="font-display font-semibold text-lg">${escapeHtml(h.name)}</p>
+      <p class="text-sm text-muted dark:text-muteddark mt-1">Public holiday — no classes today.</p>
+    `;
+    return;
+  }
+
+  holidayCard.classList.add('hidden');
+  list.classList.remove('hidden');
+  progressLabel.classList.remove('hidden');
+  document.querySelector('#scheduleHeader .flex.items-center.gap-3').classList.remove('hidden');
+
+  if (h && h.type === 'Restricted Holiday') {
+    restrictedNote.classList.remove('hidden');
+    restrictedNote.textContent = `Restricted holiday · ${h.name} — for staff only, classes run as usual`;
+  } else {
+    restrictedNote.classList.add('hidden');
+  }
+
+  list.innerHTML = '';
+  const dd = state.dayData[activeDay] || {};
+  const nm = nowMinutes();
+  const isRealToday = activeDay === todayKey() && toISODate(dateForDay(activeDay)) === toISODate(new Date());
+
+  ROUTINE[activeDay].classes.forEach(c => {
+    const done = !!dd[c.id]?.done;
+    const isNow = isRealToday && nm >= toMinutes(c.start) && nm < toMinutes(c.end);
+    const classNotes = state.notes.filter(n => n.classId === c.id && n.day === activeDay);
+
+    const row = document.createElement('div');
+    row.className = `rounded-2xl border p-4 transition-colors bg-surface dark:bg-surfacedark ${
+      isNow ? 'border-accent' : 'border-line dark:border-linedark'
+    }`;
+
+    row.innerHTML = `
+      <div class="flex items-start gap-3.5">
+        <button data-toggle="${c.id}" aria-label="${done ? 'Mark ' + c.subject + ' as not attended' : 'Mark ' + c.subject + ' as attended'}" aria-pressed="${done}" class="tap mt-0.5 h-6 w-6 shrink-0 rounded-full border-2 grid place-items-center transition-colors ${
+          done ? 'bg-ink dark:bg-inkdark border-ink dark:border-inkdark text-white dark:text-ink' : 'border-line dark:border-linedark text-transparent hover:border-ink dark:hover:border-inkdark'
+        }">${ICON.check}</button>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap text-[11px] font-mono text-muted dark:text-muteddark">
+            <span>P${c.period}</span>
+            <span>·</span>
+            <span>${c.start}–${c.end}</span>
+            <span class="inline-flex items-center gap-1">·${TAG_ICON[c.tag]}${c.tag}</span>
+            ${isNow ? '<span class="text-accent font-semibold">· NOW</span>' : ''}
+          </div>
+          <p class="font-display font-semibold mt-1 text-[15px] ${done ? 'line-through text-muted dark:text-muteddark' : ''}">${c.subject}</p>
+          <p class="text-[13px] text-muted dark:text-muteddark mt-0.5">${c.code ? c.code + ' · ' : ''}Room ${c.room}</p>
+          ${classNotes.map(n => `
+            <div class="mt-2 flex items-start gap-1.5 text-[13px]">
+              <span class="mt-1.5 h-1 w-1 rounded-full shrink-0 ${n.homework ? 'bg-accent' : 'bg-line dark:bg-linedark'}"></span>
+              <span class="flex-1 ${n.done ? 'line-through text-muted dark:text-muteddark' : 'text-ink/80 dark:text-inkdark/80'}">${escapeHtml(n.text)}${n.due ? `<span class="text-muted dark:text-muteddark"> · due ${n.due}</span>` : ''}</span>
+            </div>
+          `).join('')}
+        </div>
+        <button data-note-for="${c.id}" aria-label="Add note for ${c.subject}" title="Add note" class="tap no-print h-11 w-11 -mr-2 -mt-2 shrink-0 grid place-items-center text-muted dark:text-muteddark hover:text-ink dark:hover:text-inkdark rounded-full hover:bg-ink/5 dark:hover:bg-white/5 transition-colors">${ICON.edit}</button>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+
+  list.querySelectorAll('[data-toggle]').forEach(btn => btn.onclick = () => toggleDone(activeDay, btn.dataset.toggle));
+  list.querySelectorAll('[data-note-for]').forEach(btn => btn.onclick = () => openNoteSheet(activeDay, btn.dataset.noteFor));
+
+  const total = ROUTINE[activeDay].classes.length;
+  const doneCount = ROUTINE[activeDay].classes.filter(c => dd[c.id]?.done).length;
+  progressLabel.textContent = `${doneCount} of ${total} attended`;
+}
+
+function renderNotesList() {
+  const wrap = document.getElementById('notesList');
+  const empty = document.getElementById('notesEmpty');
+  const notes = [...state.notes].sort((a,b) => {
+    if (!!a.done !== !!b.done) return a.done ? 1 : -1;
+    if (a.due && b.due) return a.due.localeCompare(b.due);
+    if (a.due) return -1; if (b.due) return 1;
+    return b.createdAt - a.createdAt;
+  });
+  wrap.innerHTML = '';
+  empty.classList.toggle('hidden', notes.length > 0);
+  notes.forEach(n => {
+    const cls = ROUTINE[n.day]?.classes.find(c => c.id === n.classId);
+    const el = document.createElement('div');
+    el.className = `flex items-start gap-3 py-2.5 border-b border-line dark:border-linedark last:border-0 ${n.done ? 'opacity-45' : ''}`;
+    el.innerHTML = `
+      <button data-donenote="${n.id}" aria-label="${n.done ? 'Mark note as not done' : 'Mark note as done'}" aria-pressed="${n.done}" class="tap mt-0.5 h-5 w-5 shrink-0 rounded-full border-2 grid place-items-center ${n.done ? 'bg-ink dark:bg-inkdark border-ink dark:border-inkdark text-white dark:text-ink' : 'border-line dark:border-linedark hover:border-ink dark:hover:border-inkdark'}">${ICON.check}</button>
+      <div class="flex-1 min-w-0">
+        <p class="text-[11px] font-mono text-muted dark:text-muteddark">${ROUTINE[n.day]?.label || n.day}${cls ? ' · ' + cls.subject : ''}</p>
+        <p class="text-[14px] mt-0.5 ${n.done ? 'line-through' : ''}">${escapeHtml(n.text)}</p>
+        ${n.due ? `<p class="text-[12px] text-accent font-mono mt-0.5">Due ${n.due}</p>` : ''}
+      </div>
+      <button data-delnote2="${n.id}" aria-label="Delete note" class="tap no-print h-9 w-9 -mr-2 shrink-0 grid place-items-center text-muted dark:text-muteddark hover:text-danger rounded-full hover:bg-ink/5 dark:hover:bg-white/5 transition-colors">${ICON.close}</button>
+    `;
+    wrap.appendChild(el);
+  });
+  wrap.querySelectorAll('[data-donenote]').forEach(b => b.onclick = () => toggleNoteDone(b.dataset.donenote));
+  wrap.querySelectorAll('[data-delnote2]').forEach(b => b.onclick = () => deleteNote(b.dataset.delnote2));
+}
+
+function renderWeekStats() {
+  const wrap = document.getElementById('weekStats');
+  let totalClasses = 0, totalDone = 0;
+  wrap.innerHTML = DAY_ORDER.map(day => {
+    const h = holidayFor(day);
+    const isToday = day === todayKey() && toISODate(dateForDay(day)) === toISODate(new Date());
+    if (h && h.type === 'Holiday') {
+      return `
+        <div class="flex-1 flex flex-col items-center gap-2">
+          <div class="w-full h-10 rounded-lg bg-accent/10 grid place-items-center">
+            <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+          </div>
+          <span class="text-[11px] font-mono text-muted dark:text-muteddark">${day}</span>
+        </div>`;
+    }
+    const classes = ROUTINE[day].classes;
+    const dd = state.dayData[day] || {};
+    const done = classes.filter(c => dd[c.id]?.done).length;
+    totalClasses += classes.length; totalDone += done;
+    const pct = classes.length ? (done/classes.length) : 0;
+    return `
+      <div class="flex-1 flex flex-col items-center gap-2">
+        <div class="w-full h-10 rounded-lg bg-line dark:bg-linedark overflow-hidden flex items-end">
+          <div class="w-full ${isToday ? 'bg-accent' : 'bg-ink dark:bg-inkdark'} transition-all duration-300" style="height:${Math.round(pct*100)}%"></div>
+        </div>
+        <span class="text-[11px] font-mono text-muted dark:text-muteddark">${day}</span>
+      </div>`;
+  }).join('');
+  const overall = totalClasses ? Math.round((totalDone/totalClasses)*100) : 0;
+  document.getElementById('weekPct').textContent = `${overall}% attended`;
+}
+
+function renderNowBanner() {
+  const day = todayKey();
+  const statusEl = document.getElementById('nowStatus');
+  const subjEl = document.getElementById('nowSubject');
+  const metaEl = document.getElementById('nowMeta');
+  const dotEl = document.getElementById('nowDot');
+  dotEl.classList.remove('hidden');
+
+  if (!DAY_ORDER.includes(day)) {
+    dotEl.classList.add('hidden');
+    statusEl.textContent = 'Weekend';
+    subjEl.textContent = 'No classes today';
+    metaEl.textContent = 'Enjoy the break';
+    return;
+  }
+
+  const todayHoliday = HOLIDAYS.find(h => h.date === toISODate(new Date()));
+  if (todayHoliday && todayHoliday.type === 'Holiday') {
+    statusEl.textContent = 'Holiday today';
+    subjEl.textContent = todayHoliday.name;
+    metaEl.textContent = 'No classes today';
+    return;
+  }
+
+  const nm = nowMinutes();
+  const classes = ROUTINE[day].classes;
+  const current = classes.find(c => nm >= toMinutes(c.start) && nm < toMinutes(c.end));
+  const restrictedSuffix = (todayHoliday && todayHoliday.type === 'Restricted Holiday') ? ` · ${todayHoliday.name} (staff only)` : '';
+  if (current) {
+    statusEl.textContent = 'Now';
+    subjEl.textContent = `${current.subject}${current.code ? ' — ' + current.code : ''}`;
+    metaEl.textContent = `${current.start}–${current.end} · Room ${current.room} · ends in ${toMinutes(current.end)-nm} min${restrictedSuffix}`;
+    return;
+  }
+  const next = classes.find(c => toMinutes(c.start) > nm);
+  if (next) {
+    statusEl.textContent = 'Next up';
+    subjEl.textContent = `${next.subject}${next.code ? ' — ' + next.code : ''}`;
+    metaEl.textContent = `${next.start}–${next.end} · Room ${next.room} · in ${toMinutes(next.start) - nm} min${restrictedSuffix}`;
+    return;
+  }
+  statusEl.textContent = 'Done for today';
+  subjEl.textContent = 'No more classes';
+  metaEl.textContent = `See you tomorrow${restrictedSuffix}`;
+}
+
+function renderAll() {
+  renderHeader();
+  renderTabs();
+  renderSchedule();
+  renderNotesList();
+  renderWeekStats();
+  renderNowBanner();
+}
+
+/* ---------------- Actions ---------------- */
+async function toggleDone(day, classId) {
+  state.dayData[day] = state.dayData[day] || {};
+  const cur = !!state.dayData[day][classId]?.done;
+  state.dayData[day][classId] = { done: !cur };
+  await storeSet(`daydata:${day}`, state.dayData[day]);
+  renderAll();
+}
+async function setDayAll(day, done) {
+  state.dayData[day] = state.dayData[day] || {};
+  ROUTINE[day].classes.forEach(c => { state.dayData[day][c.id] = { done }; });
+  await storeSet(`daydata:${day}`, state.dayData[day]);
+  renderAll();
+}
+async function toggleNoteDone(id) {
+  const n = state.notes.find(x => x.id === id);
+  if (n) { n.done = !n.done; await storeSet('notes', state.notes); renderAll(); }
+}
+async function deleteNote(id) {
+  state.notes = state.notes.filter(x => x.id !== id);
+  await storeSet('notes', state.notes);
+  renderAll();
+}
+function applySearch(query) {
+  const q = query.trim().toLowerCase();
+  const list = document.getElementById('scheduleList');
+  document.getElementById('holidayCard').classList.add('hidden');
+  list.classList.remove('hidden');
+  if (!q) { renderSchedule(); return; }
+  const matches = [];
+  DAY_ORDER.forEach(day => {
+    ROUTINE[day].classes.forEach(c => {
+      if ((c.subject + ' ' + c.code).toLowerCase().includes(q)) matches.push({ day, c });
+    });
+  });
+  document.getElementById('dayHeading').textContent = `Search (${matches.length})`;
+  list.innerHTML = matches.length ? matches.map(({day,c}) => `
+    <div class="rounded-2xl border border-line dark:border-linedark p-4 bg-surface dark:bg-surfacedark">
+      <p class="font-mono text-[11px] text-muted dark:text-muteddark">${ROUTINE[day].label} · P${c.period} · ${c.start}–${c.end}</p>
+      <p class="font-display font-semibold mt-0.5 text-[15px]">${c.subject}</p>
+      <p class="text-[13px] text-muted dark:text-muteddark">${c.code ? c.code + ' · ' : ''}Room ${c.room}</p>
+    </div>
+  `).join('') : `<p class="text-sm text-muted dark:text-muteddark">No subject matches "${escapeHtml(query)}".</p>`;
+}
+
+/* ---------------- Note sheet ---------------- */
+function setNoteKind(kind) {
+  const isHw = kind === 'homework';
+  const noteBtn = document.getElementById('chipNote');
+  const hwBtn = document.getElementById('chipHomework');
+  noteBtn.dataset.active = String(!isHw);
+  hwBtn.dataset.active = String(isHw);
+  noteBtn.className = `tap flex-1 min-h-[44px] rounded-2xl border text-sm font-medium transition-colors ${!isHw ? 'bg-ink dark:bg-inkdark text-white dark:text-ink border-ink dark:border-inkdark' : 'border-line dark:border-linedark text-muted dark:text-muteddark hover:border-ink dark:hover:border-inkdark'}`;
+  hwBtn.className = `tap flex-1 min-h-[44px] rounded-2xl border text-sm font-medium transition-colors ${isHw ? 'bg-accent text-white border-accent' : 'border-line dark:border-linedark text-muted dark:text-muteddark hover:border-accent'}`;
+  document.getElementById('dueWrap').classList.toggle('hidden', !isHw);
+}
+
+function openNoteSheet(day, classId) {
+  const cls = ROUTINE[day].classes.find(c => c.id === classId);
+  noteCtx = { day, classId };
+  document.getElementById('noteSheetContext').textContent = `${ROUTINE[day].label} · P${cls.period}`;
+  document.getElementById('noteSheetTitle').textContent = cls.subject;
+  document.getElementById('chipNote').textContent = 'Just a note';
+  document.getElementById('chipHomework').textContent = 'Homework';
+  document.getElementById('noteText').value = '';
+  document.getElementById('noteDue').value = '';
+  setNoteKind('note');
+
+  const wrap = document.getElementById('noteSheetWrap');
+  wrap.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    document.getElementById('noteBackdrop').classList.remove('opacity-0');
+    const panel = document.getElementById('notePanel');
+    panel.classList.remove('translate-y-full', 'sm:translate-y-4', 'sm:opacity-0');
+  });
+  document.getElementById('noteText').focus();
+}
+
+function closeNoteSheet() {
+  document.getElementById('noteBackdrop').classList.add('opacity-0');
+  const panel = document.getElementById('notePanel');
+  panel.classList.add('translate-y-full', 'sm:translate-y-4', 'sm:opacity-0');
+  setTimeout(() => document.getElementById('noteSheetWrap').classList.add('hidden'), 220);
+}
+
+async function saveNote() {
+  const text = document.getElementById('noteText').value.trim();
+  if (!text) { document.getElementById('noteText').focus(); return; }
+  const homework = document.getElementById('chipHomework').dataset.active === 'true';
+  const due = document.getElementById('noteDue').value;
+  state.notes.push({ id: uid(), day: noteCtx.day, classId: noteCtx.classId, text, homework, due: (homework && due) ? due : null, done: false, createdAt: Date.now() });
+  await storeSet('notes', state.notes);
+  closeNoteSheet();
+  renderAll();
+}
+
+/* ---------------- Calendar sheet ---------------- */
+let calMonth = new Date();
+calMonth.setDate(1);
+
+function renderCalendar() {
+  const title = document.getElementById('calSheetTitle');
+  title.textContent = calMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  const firstOfMonth = new Date(calMonth.getFullYear(), calMonth.getMonth(), 1);
+  const daysInMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 0).getDate();
+  const leadBlank = (firstOfMonth.getDay() + 6) % 7; // Monday-first offset
+  const todayISO = toISODate(new Date());
+
+  for (let i = 0; i < leadBlank; i++) {
+    grid.appendChild(document.createElement('div'));
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(calMonth.getFullYear(), calMonth.getMonth(), day);
+    const iso = toISODate(d);
+    const h = HOLIDAYS.find(x => x.date === iso);
+    const isToday = iso === todayISO;
+    const cell = document.createElement('div');
+    cell.className = `aspect-square rounded-xl flex flex-col items-center justify-center gap-1 text-[13px] ${
+      isToday ? 'bg-ink dark:bg-inkdark text-white dark:text-ink font-semibold' : 'text-ink dark:text-inkdark'
+    }`;
+    let dot = '';
+    if (h && h.type === 'Holiday') {
+      dot = `<span class="h-1.5 w-1.5 rounded-full ${isToday ? 'bg-accent' : 'bg-accent'}"></span>`;
+    } else if (h && h.type === 'Restricted Holiday') {
+      dot = `<span class="h-1.5 w-1.5 rounded-full border ${isToday ? 'border-white' : 'border-accent'}"></span>`;
+    } else {
+      dot = `<span class="h-1.5 w-1.5"></span>`;
+    }
+    cell.innerHTML = `<span>${day}</span>${dot}`;
+    if (h) { cell.title = h.name; }
+    grid.appendChild(cell);
+  }
+
+  const monthList = document.getElementById('calMonthList');
+  const monthHolidays = HOLIDAYS.filter(h => h.date.startsWith(`${calMonth.getFullYear()}-${String(calMonth.getMonth()+1).padStart(2,'0')}`));
+  monthList.innerHTML = monthHolidays.length ? monthHolidays.map(h => {
+    const d = new Date(h.date + 'T00:00:00');
+    return `
+      <div class="flex items-center gap-3 py-1.5 text-[13px]">
+        <span class="h-2 w-2 rounded-full shrink-0 ${h.type === 'Holiday' ? 'bg-accent' : 'border border-accent'}"></span>
+        <span class="w-9 font-mono text-muted dark:text-muteddark shrink-0">${fmtShort(d)}</span>
+        <span class="flex-1">${escapeHtml(h.name)}</span>
+      </div>`;
+  }).join('') : `<p class="text-[13px] text-muted dark:text-muteddark">No holidays this month.</p>`;
+}
+
+function openCalendar() {
+  calMonth = new Date(WEEK_MONDAY.getFullYear(), WEEK_MONDAY.getMonth(), 1);
+  renderCalendar();
+  const wrap = document.getElementById('calSheetWrap');
+  wrap.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    document.getElementById('calBackdrop').classList.remove('opacity-0');
+    document.getElementById('calPanel').classList.remove('translate-y-full', 'sm:translate-y-4', 'sm:opacity-0');
+  });
+}
+function closeCalendar() {
+  document.getElementById('calBackdrop').classList.add('opacity-0');
+  document.getElementById('calPanel').classList.add('translate-y-full', 'sm:translate-y-4', 'sm:opacity-0');
+  setTimeout(() => document.getElementById('calSheetWrap').classList.add('hidden'), 220);
+}
+
+/* ---------------- Dark mode ---------------- */
+async function setDark(on) {
+  state.dark = on;
+  document.documentElement.classList.toggle('dark', on);
+  document.getElementById('darkIconMoon').classList.toggle('hidden', on);
+  document.getElementById('darkIconSun').classList.toggle('hidden', !on);
+  await storeSet('settings', { dark: on });
+}
+
+/* ---------------- Init ---------------- */
+async function init() {
+  const [routineData, holidayData] = await Promise.all([
+    loadJSON('routine.json', FALLBACK_ROUTINE),
+    loadJSON('holidays.json', FALLBACK_HOLIDAYS),
+  ]);
+  ROUTINE = routineData.days;
+  DAY_ORDER = routineData.dayOrder;
+  HOLIDAYS = holidayData.holidays;
+  WEEK_MONDAY = weekMonday(new Date());
+  activeDay = DAY_ORDER.includes(todayKey()) ? todayKey() : DAY_ORDER[0];
+
+  const dayDatas = await Promise.all(DAY_ORDER.map(d => storeGet(`daydata:${d}`, {})));
+  DAY_ORDER.forEach((d, i) => state.dayData[d] = dayDatas[i]);
+  state.notes = await storeGet('notes', []);
+  const settings = await storeGet('settings', { dark: false });
+  setDark(!!settings.dark);
+
+  renderAll();
+
+  document.getElementById('darkToggle').onclick = () => setDark(!state.dark);
+  document.getElementById('printBtn').onclick = () => window.print();
+  document.getElementById('checkAllBtn').onclick = () => setDayAll(activeDay, true);
+  document.getElementById('resetDayBtn').onclick = () => setDayAll(activeDay, false);
+  document.getElementById('searchInput').oninput = (e) => applySearch(e.target.value);
+
+  document.getElementById('cancelNoteBtn').onclick = closeNoteSheet;
+  document.getElementById('saveNoteBtn').onclick = saveNote;
+  document.getElementById('noteBackdrop').onclick = closeNoteSheet;
+  document.getElementById('chipNote').onclick = () => setNoteKind('note');
+  document.getElementById('chipHomework').onclick = () => setNoteKind('homework');
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !document.getElementById('noteSheetWrap').classList.contains('hidden')) closeNoteSheet();
+    if (e.key === 'Escape' && !document.getElementById('calSheetWrap').classList.contains('hidden')) closeCalendar();
+  });
+
+  document.getElementById('calendarBtn').onclick = openCalendar;
+  document.getElementById('calCloseBtn').onclick = closeCalendar;
+  document.getElementById('calBackdrop').onclick = closeCalendar;
+  document.getElementById('calPrevBtn').onclick = () => { calMonth.setMonth(calMonth.getMonth() - 1); renderCalendar(); };
+  document.getElementById('calNextBtn').onclick = () => { calMonth.setMonth(calMonth.getMonth() + 1); renderCalendar(); };
+
+  setInterval(renderNowBanner, 30000);
+  setInterval(() => { if (!document.getElementById('searchInput').value) renderSchedule(); }, 60000);
+}
+init();
+</script>
+</body>
+</html>
