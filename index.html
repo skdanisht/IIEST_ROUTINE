@@ -221,37 +221,200 @@
    shipped JSON exactly.
    ================================================================= */
 const FALLBACK_ROUTINE = {
-  "dayOrder": ["Mon","Tue","Wed","Thu","Fri"],
+  "dayOrder": ["Mon", "Tue", "Wed", "Thu", "Fri"],
   "days": {
-    "Mon": { "label":"Monday", "classes": [
-      { "id":"mon-1", "period":"1–3", "start":"09:00", "end":"11:45", "subject":"Computer Programming Practice", "code":"CS 1171N", "tag":"Lab", "room":"—" },
-      { "id":"mon-2", "period":"4", "start":"11:45", "end":"12:40", "subject":"Engineering Physics", "code":"PH 1101N", "tag":"Lecture", "room":"L102" },
-      { "id":"mon-3", "period":"5–6", "start":"13:50", "end":"15:40", "subject":"Engineering Mathematics-I", "code":"MA 1101N", "tag":"Lecture", "room":"L102" }
-    ]},
-    "Tue": { "label":"Tuesday", "classes": [
-      { "id":"tue-1", "period":"1", "start":"09:00", "end":"09:55", "subject":"Engineering Mechanics", "code":"AM 1101N", "tag":"Lecture", "room":"L101" },
-      { "id":"tue-2", "period":"2", "start":"09:55", "end":"10:50", "subject":"Engineering Mathematics-I", "code":"MA 1101N", "tag":"Lecture", "room":"L101" },
-      { "id":"tue-3", "period":"3–4", "start":"10:50", "end":"12:40", "subject":"Basic Electrical Engineering", "code":"EE 1101N", "tag":"Lecture", "room":"U413" },
-      { "id":"tue-4", "period":"5–7", "start":"13:50", "end":"16:35", "subject":"NSS / NCC / PT / Yoga", "code":"", "tag":"Activity", "room":"—" }
-    ]},
-    "Wed": { "label":"Wednesday", "classes": [
-      { "id":"wed-1", "period":"1–2", "start":"09:00", "end":"10:50", "subject":"Energy, Environment and Climate Change", "code":"CE 1101N", "tag":"Lecture", "room":"L102" },
-      { "id":"wed-2", "period":"3–4", "start":"10:50", "end":"12:40", "subject":"Introduction to AI & ML", "code":"CS 1102N", "tag":"Lecture", "room":"L201" },
-      { "id":"wed-3", "period":"5–7", "start":"13:50", "end":"16:35", "subject":"NSS / NCC / PT / Yoga", "code":"", "tag":"Activity", "room":"—" }
-    ]},
-    "Thu": { "label":"Thursday", "classes": [
-      { "id":"thu-1", "period":"1", "start":"09:00", "end":"09:55", "subject":"Engineering Mechanics", "code":"AM 1101N", "tag":"Lecture", "room":"L102" },
-      { "id":"thu-2", "period":"2–3", "start":"09:55", "end":"11:45", "subject":"Introduction to AI & ML", "code":"CS 1102N", "tag":"Lecture", "room":"L201" },
-      { "id":"thu-3", "period":"5–7", "start":"13:50", "end":"16:35", "subject":"Engineering Physics Lab", "code":"PH 1171N", "tag":"Lab", "room":"—" }
-    ]},
-    "Fri": { "label":"Friday", "classes": [
-      { "id":"fri-1", "period":"1", "start":"09:00", "end":"09:55", "subject":"Basic Electrical Engineering", "code":"EE 1101N", "tag":"Lecture", "room":"U613" },
-      { "id":"fri-2", "period":"2", "start":"09:55", "end":"10:50", "subject":"Engineering Physics", "code":"PH 1101N", "tag":"Lecture", "room":"U613" },
-      { "id":"fri-3", "period":"5–7", "start":"13:50", "end":"16:35", "subject":"Engineering Graphics", "code":"AM 1171", "tag":"Drawing", "room":"Dwg. Hall" }
-    ]}
+    "Mon": {
+      "label": "Monday",
+      "classes": [
+        {
+          "id": "mon-1",
+          "period": "2–4",
+          "start": "09:55",
+          "end": "12:40",
+          "subject": "Computer Programming Practice",
+          "code": "CS 1171N",
+          "tag": "Lab",
+          "room": "—"
+        },
+        {
+          "id": "mon-2",
+          "period": "5",
+          "start": "13:50",
+          "end": "14:45",
+          "subject": "Engineering Physics",
+          "code": "PH 1101N",
+          "tag": "Lecture",
+          "room": "L102"
+        },
+        {
+          "id": "mon-3",
+          "period": "6–7",
+          "start": "14:45",
+          "end": "16:35",
+          "subject": "Engineering Mathematics-I",
+          "code": "MA 1101N",
+          "tag": "Lecture",
+          "room": "L102"
+        }
+      ]
+    },
+
+    "Tue": {
+      "label": "Tuesday",
+      "classes": [
+        {
+          "id": "tue-1",
+          "period": "2",
+          "start": "09:55",
+          "end": "10:50",
+          "subject": "Engineering Mechanics",
+          "code": "AM 1101N",
+          "tag": "Lecture",
+          "room": "L101"
+        },
+        {
+          "id": "tue-2",
+          "period": "3",
+          "start": "10:50",
+          "end": "11:45",
+          "subject": "Engineering Mathematics-I",
+          "code": "MA 1101N",
+          "tag": "Lecture",
+          "room": "L101"
+        },
+        {
+          "id": "tue-3",
+          "period": "5",
+          "start": "13:50",
+          "end": "14:45",
+          "subject": "Basic Electrical Engineering",
+          "code": "EE1101N",
+          "tag": "Lecture",
+          "room": "U413"
+        },
+        {
+          "id": "tue-4",
+          "period": "7",
+          "start": "15:40",
+          "end": "16:35",
+          "subject": "NSS/NCC/PT/Yoga",
+          "code": "",
+          "tag": "Activity",
+          "room": "—"
+        }
+      ]
+    },
+
+    "Wed": {
+      "label": "Wednesday",
+      "classes": [
+        {
+          "id": "wed-1",
+          "period": "1–2",
+          "start": "09:00",
+          "end": "10:50",
+          "subject": "Energy, Environment and Climate Change",
+          "code": "CE 1101N",
+          "tag": "Lecture",
+          "room": "L102"
+        },
+        {
+          "id": "wed-2",
+          "period": "3",
+          "start": "10:50",
+          "end": "11:45",
+          "subject": "Introduction to AI&ML",
+          "code": "CS 1102N",
+          "tag": "Lecture",
+          "room": "L201"
+        },
+        {
+          "id": "wed-3",
+          "period": "4",
+          "start": "11:45",
+          "end": "12:40",
+          "subject": "NSS/NCC/PT/Yoga",
+          "code": "",
+          "tag": "Activity",
+          "room": "—"
+        }
+      ]
+    },
+
+    "Thu": {
+      "label": "Thursday",
+      "classes": [
+        {
+          "id": "thu-1",
+          "period": "2",
+          "start": "09:55",
+          "end": "10:50",
+          "subject": "Engineering Mechanics",
+          "code": "AM 1101N",
+          "tag": "Lecture",
+          "room": "L102"
+        },
+        {
+          "id": "thu-2",
+          "period": "3–4",
+          "start": "10:50",
+          "end": "12:40",
+          "subject": "Introduction to AI&ML",
+          "code": "CS 1102N",
+          "tag": "Lecture",
+          "room": "L201"
+        },
+        {
+          "id": "thu-3",
+          "period": "5–7",
+          "start": "13:50",
+          "end": "16:35",
+          "subject": "Engineering Physics Lab",
+          "code": "PH 1171N",
+          "tag": "Lab",
+          "room": "—"
+        }
+      ]
+    },
+
+    "Fri": {
+      "label": "Friday",
+      "classes": [
+        {
+          "id": "fri-1",
+          "period": "1",
+          "start": "09:00",
+          "end": "09:55",
+          "subject": "Basic Electrical Engineering",
+          "code": "EE1101N",
+          "tag": "Lecture",
+          "room": "U613"
+        },
+        {
+          "id": "fri-2",
+          "period": "2–3",
+          "start": "09:55",
+          "end": "11:45",
+          "subject": "Engineering Physics",
+          "code": "PH 1101N",
+          "tag": "Lecture",
+          "room": "U613"
+        },
+        {
+          "id": "fri-3",
+          "period": "5–7",
+          "start": "13:50",
+          "end": "16:35",
+          "subject": "Engineering Graphics",
+          "code": "AM 1171",
+          "tag": "Drawing",
+          "room": "Dwg. Hall"
+        }
+      ]
+    }
   }
 };
-
+  
 const FALLBACK_HOLIDAYS = {
   "region": "West Bengal, India",
   "year": 2026,
@@ -285,7 +448,7 @@ const FALLBACK_HOLIDAYS = {
     { "date":"2026-08-15", "name":"Independence Day", "type":"Holiday" },
     { "date":"2026-08-26", "name":"Fateha-Dwaz-Daham", "type":"Restricted Holiday" },
     { "date":"2026-08-28", "name":"Rakhi Bandhan", "type":"Restricted Holiday" },
-    { "date":"2026-09-04", "name":"Janmastami", "type":"Holiday" },
+    { "date":"2026-09-04", "name":"Janmastami", "type":"Restricted Holiday" },
     { "date":"2026-09-17", "name":"Viswakarma Puja", "type":"Restricted Holiday" },
     { "date":"2026-10-02", "name":"Birthday of Gandhiji", "type":"Holiday" },
     { "date":"2026-10-10", "name":"Mahalaya", "type":"Holiday" },
