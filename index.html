@@ -222,6 +222,7 @@
    ================================================================= */
 const FALLBACK_ROUTINE = {
   "dayOrder": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+
   "days": {
     "Mon": {
       "label": "Monday",
@@ -232,7 +233,7 @@ const FALLBACK_ROUTINE = {
           "start": "09:55",
           "end": "12:40",
           "subject": "Computer Programming Practice",
-          "code": "CS 1171N",
+          "code": "CS 1171 N",
           "tag": "Lab",
           "room": "—"
         },
@@ -251,8 +252,8 @@ const FALLBACK_ROUTINE = {
           "period": "6–7",
           "start": "14:45",
           "end": "16:35",
-          "subject": "Engineering Mathematics-I",
-          "code": "MA 1101N",
+          "subject": "Engineering Mathematics – I",
+          "code": "MA-1101N",
           "tag": "Lecture",
           "room": "L102"
         }
@@ -264,8 +265,8 @@ const FALLBACK_ROUTINE = {
       "classes": [
         {
           "id": "tue-1",
-          "period": "2",
-          "start": "09:55",
+          "period": "1–2",
+          "start": "09:00",
           "end": "10:50",
           "subject": "Engineering Mechanics",
           "code": "AM 1101N",
@@ -274,23 +275,23 @@ const FALLBACK_ROUTINE = {
         },
         {
           "id": "tue-2",
-          "period": "3",
+          "period": "3–4",
           "start": "10:50",
-          "end": "11:45",
-          "subject": "Engineering Mathematics-I",
-          "code": "MA 1101N",
+          "end": "12:40",
+          "subject": "Engineering Mathematics – I",
+          "code": "MA-1101N",
           "tag": "Lecture",
           "room": "L101"
         },
         {
           "id": "tue-3",
-          "period": "5",
+          "period": "5–6",
           "start": "13:50",
-          "end": "14:45",
+          "end": "15:40",
           "subject": "Basic Electrical Engineering",
           "code": "EE1101N",
           "tag": "Lecture",
-          "room": "U413"
+          "room": "U 413"
         },
         {
           "id": "tue-4",
@@ -323,7 +324,7 @@ const FALLBACK_ROUTINE = {
           "period": "3",
           "start": "10:50",
           "end": "11:45",
-          "subject": "Introduction to AI&ML",
+          "subject": "Introduction to AI & ML",
           "code": "CS 1102N",
           "tag": "Lecture",
           "room": "L201"
@@ -359,7 +360,7 @@ const FALLBACK_ROUTINE = {
           "period": "3–4",
           "start": "10:50",
           "end": "12:40",
-          "subject": "Introduction to AI&ML",
+          "subject": "Introduction to AI & ML",
           "code": "CS 1102N",
           "tag": "Lecture",
           "room": "L201"
@@ -416,59 +417,266 @@ const FALLBACK_ROUTINE = {
 };
   
 const FALLBACK_HOLIDAYS = {
-  "region": "West Bengal, India",
+  "region": "IIEST, Shibpur",
   "year": 2026,
+
   "holidays": [
-    { "date":"2026-01-01", "name":"New Year's Day", "type":"Holiday" },
-    { "date":"2026-01-12", "name":"Birthday of Swami Vivekananda", "type":"Holiday" },
-    { "date":"2026-01-22", "name":"Day before Saraswati Puja", "type":"Restricted Holiday" },
-    { "date":"2026-01-23", "name":"Netaji's Birthday / Saraswati Puja", "type":"Holiday" },
-    { "date":"2026-01-26", "name":"Republic Day", "type":"Holiday" },
-    { "date":"2026-02-04", "name":"Shab-e-Barat", "type":"Restricted Holiday" },
-    { "date":"2026-02-14", "name":"Birthday of Thakur Panchanan Barma", "type":"Restricted Holiday" },
-    { "date":"2026-03-03", "name":"Doljatra", "type":"Holiday" },
-    { "date":"2026-03-04", "name":"Holi (day after Doljatra)", "type":"Restricted Holiday" },
-    { "date":"2026-03-17", "name":"Birthday of Shri Shri Harichand Thakur", "type":"Restricted Holiday" },
-    { "date":"2026-03-20", "name":"Day before Eid-Ul-Fitr", "type":"Restricted Holiday" },
-    { "date":"2026-03-21", "name":"Eid-Ul-Fitr", "type":"Holiday" },
-    { "date":"2026-03-26", "name":"Ram Navami", "type":"Holiday" },
-    { "date":"2026-03-31", "name":"Mahavir Jayanti", "type":"Holiday" },
-    { "date":"2026-04-03", "name":"Good Friday", "type":"Holiday" },
-    { "date":"2026-04-04", "name":"Easter Saturday", "type":"Restricted Holiday" },
-    { "date":"2026-04-14", "name":"Birthday of Dr. B. R. Ambedkar", "type":"Holiday" },
-    { "date":"2026-04-15", "name":"Bengali New Year's Day (Nababarsha)", "type":"Holiday" },
-    { "date":"2026-05-01", "name":"May Day / Buddha Purnima", "type":"Holiday" },
-    { "date":"2026-05-09", "name":"Birthday of Rabindranath Tagore", "type":"Holiday" },
-    { "date":"2026-05-26", "name":"Day before Id-Ud-Zoha (Bakrid)", "type":"Restricted Holiday" },
-    { "date":"2026-05-27", "name":"Id-Ud-Zoha (Bakrid)", "type":"Holiday" },
-    { "date":"2026-06-26", "name":"Muharram", "type":"Holiday" },
-    { "date":"2026-06-30", "name":"Hul Diwas", "type":"Restricted Holiday" },
-    { "date":"2026-07-13", "name":"Birthday of Poet Bhanu Bhakt", "type":"Restricted Holiday" },
-    { "date":"2026-07-16", "name":"Rathayatra", "type":"Restricted Holiday" },
-    { "date":"2026-08-15", "name":"Independence Day", "type":"Holiday" },
-    { "date":"2026-08-26", "name":"Fateha-Dwaz-Daham", "type":"Restricted Holiday" },
-    { "date":"2026-08-28", "name":"Rakhi Bandhan", "type":"Restricted Holiday" },
-    { "date":"2026-09-04", "name":"Janmastami", "type":"Restricted Holiday" },
-    { "date":"2026-09-17", "name":"Viswakarma Puja", "type":"Restricted Holiday" },
-    { "date":"2026-10-02", "name":"Birthday of Gandhiji", "type":"Holiday" },
-    { "date":"2026-10-10", "name":"Mahalaya", "type":"Holiday" },
-    { "date":"2026-10-15", "name":"Durga Puja, Maha Chaturthi", "type":"Restricted Holiday" },
-    { "date":"2026-10-16", "name":"Durga Puja, Maha Panchami", "type":"Restricted Holiday" },
-    { "date":"2026-10-17", "name":"Durga Puja, Maha Shashthi", "type":"Restricted Holiday" },
-    { "date":"2026-10-19", "name":"Durga Puja, Maha Astami", "type":"Holiday" },
-    { "date":"2026-10-20", "name":"Durga Puja, Maha Nabami", "type":"Holiday" },
-    { "date":"2026-10-21", "name":"Durga Puja, Dasami", "type":"Holiday" },
-    { "date":"2026-10-22", "name":"Additional day for Durga Puja", "type":"Restricted Holiday" },
-    { "date":"2026-10-23", "name":"Additional day for Durga Puja", "type":"Restricted Holiday" },
-    { "date":"2026-10-24", "name":"Additional day for Durga Puja", "type":"Restricted Holiday" },
-    { "date":"2026-10-26", "name":"Additional day for Lakshmi Puja", "type":"Restricted Holiday" },
-    { "date":"2026-11-09", "name":"Additional day for Kali Puja", "type":"Restricted Holiday" },
-    { "date":"2026-11-10", "name":"Additional day for Kali Puja", "type":"Restricted Holiday" },
-    { "date":"2026-11-11", "name":"Bhratridwitiya", "type":"Holiday" },
-    { "date":"2026-11-12", "name":"Day after Bhratridwitiya", "type":"Restricted Holiday" },
-    { "date":"2026-11-16", "name":"Additional day for Chhat Puja", "type":"Restricted Holiday" },
-    { "date":"2026-11-24", "name":"Birthday of Guru Nanak", "type":"Holiday" },
-    { "date":"2026-12-25", "name":"Christmas Day", "type":"Holiday" }
+    {
+      "date": "2026-01-23",
+      "name": "Basant Panchami / Sri Panchami",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-01-26",
+      "name": "Republic Day",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-03-04",
+      "name": "Holi",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-03-21",
+      "name": "Id-ul-Fitr*",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-03-31",
+      "name": "Mahavir Jayanti",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-04-03",
+      "name": "Good Friday",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-05-01",
+      "name": "Buddha Purnima",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-05-27",
+      "name": "Id-Uz-Zuha (Bakrid)*",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-06-26",
+      "name": "Muharram*",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-08-15",
+      "name": "Independence Day",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-08-26",
+      "name": "Milad-un-Nabi or Id-E-Milad (Birthday of Prophet Mohammad)*",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-10-02",
+      "name": "Mahatma Gandhi's Birthday",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-10-19",
+      "name": "Dussehra (Mahaashtami) (Additional day)",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-10-20",
+      "name": "Dussehra",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-11-08",
+      "name": "Diwali (Deepavali)",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-11-24",
+      "name": "Guru Nanak's Birthday",
+      "type": "Holiday"
+    },
+    {
+      "date": "2026-12-25",
+      "name": "Christmas Day",
+      "type": "Holiday"
+    },
+
+    {
+      "date": "2026-01-01",
+      "name": "New Year's Day",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-01-03",
+      "name": "Hazrat Ali's Birthday",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-01-14",
+      "name": "Makar Sankranti / Magha Bihu / Pongal",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-01-23",
+      "name": "Netaji Subhash Chandra Bose's Birthday",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-02-01",
+      "name": "Guru Ravi Das's Birthday",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-02-12",
+      "name": "Birthday of Swami Dayananda Saraswati",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-02-15",
+      "name": "Maha Shivaratri",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-02-19",
+      "name": "Shivaji Jayanti",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-03-03",
+      "name": "Holika Dahan / Doljatra",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-03-19",
+      "name": "Chaitra Sukladi / Gudi Padava / Ugadi / Cheti Chand",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-03-20",
+      "name": "Jamat-ul-Vida",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-03-26",
+      "name": "Ram Navami",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-04-05",
+      "name": "Easter Sunday",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-04-14",
+      "name": "Vaisakhi / Vishu / Mesadi (Tamil New Year's day)",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-04-15",
+      "name": "Vaisakhadi (Bengal) / Bahag Bihu (Assam)",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-05-09",
+      "name": "Birthday of Gurudev Rabindranath Tagore",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-07-16",
+      "name": "Rath Yatra",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-08-15",
+      "name": "Parsi New Year's Day / Nauraj",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-08-26",
+      "name": "Onam or Thiru Onam Day",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-08-28",
+      "name": "Raksha Bandhan",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-09-04",
+      "name": "Janmashtami (Vaishnava)",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-09-14",
+      "name": "Vinayaka Chathurthi / Ganesh Chaturthi",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-10-18",
+      "name": "Dussehra (Saptami)",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-10-20",
+      "name": "Dussehra (Mahanavami)",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-10-26",
+      "name": "Maharshi Valmiki's Birthday",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-10-29",
+      "name": "Karaka Chaturthi (Karwa Chauth)",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-11-08",
+      "name": "Naraka Chaturdasi",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-11-09",
+      "name": "Govardhan Puja",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-11-11",
+      "name": "Bhai Duj",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-11-15",
+      "name": "Pratihar Shashthi or Surya Shashti (Chhat Puja)",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-11-18",
+      "name": "Jagaddhatri Puja",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-11-24",
+      "name": "Guru Teg Bahadur's Martyrdom Day",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-12-23",
+      "name": "Hazrat Ali's Birthday",
+      "type": "Restricted Holiday"
+    },
+    {
+      "date": "2026-12-24",
+      "name": "Christmas Eve",
+      "type": "Restricted Holiday"
+    }
   ]
 };
 
